@@ -1,0 +1,142 @@
+﻿@{
+    ViewBag.Title = "Trang chủ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container">
+    <div style="padding-bottom:10px; width:100%;text-align:right;"><button class="btn btn-info" onclick="Addnew()">Thêm mới</button></div>
+    <div style="height: 79vh!important;overflow-y:auto;">
+        <div style="border:1px solid #333;border-bottom:none;">
+            @if (Model.Count != 0)
+            {
+                <ul>
+                    @foreach (var item in Model)
+                {
+                        <li class="form-control" style="background:#808080;"><a href="#" id="@item.Id" style="color:#00e600;">@item.Name</a></li>
+                        <li class="bottom-border"></li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <div style="width:100%;text-align:center;">Không có dữ liệu</div>
+                <div class="bottom-border"></div>
+            }
+        </div>
+
+    </div>
+</div>
+<div class="modal" id="ModalAddChannel" role="dialog">
+    <div class="modal-dialog" style="width:320px;padding-top:100px;">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="form-group">
+                    <b>Tên kênh:</b>
+                    <input type="text" class="form-control" id="name" placeholder="Nhập tên kênh" autofocus="autofocus" onkeydown="EnterAdd()">
+                </div>
+                <div class="form-group">
+                    <b>Mật khẩu:</b>
+                    <input type="password" class="form-control" id="pwd" placeholder="Nhập mật khẩu" onkeydown="EnterAdd()">
+                </div>
+                <div class="form-group">
+                    <b>Password:</b>
+                    <input type="password" class="form-control" id="re_pwd" placeholder="Nhập lại mật khẩu" onkeydown="EnterAdd()">
+                </div>
+                <button onclick="AddChannel()" class="btn btn-info">Xác nhận</button>
+                <br />
+                <span id="ErrorAdd" style="color:red;"></span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="ModalPassword" role="dialog">
+    <div class="modal-dialog" style="width:450px;padding-top:100px;">
+        <div class="modal-content">
+            <div class="modal-body" style="text-align:center">
+                <input type="hidden" id="ID" />
+                <input type="password" class="form-control d-inline" placeholder="Nhập mật khẩu" id="Password" autofocus="autofocus" onkeydown="EnterPwd()" />
+                <button type="button" onclick="Submit()" class="btn btn-info d-inline">Xác nhận</button>
+                <br />
+                <span id="ErrorJoin" style="color:red;"></span>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $("a").click(function () {
+        var Id_channel = this.id;
+        document.getElementById("ID").value = Id_channel;
+        $('#ModalPassword').modal();//hiển thị modal
+    })
+    function Addnew() {
+        $('#ModalAddChannel').modal();//hiển thị modal
+    }
+    function EnterPwd() {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13')
+            Submit();
+    }
+    function EnterAdd() {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13')
+            AddChannel();
+    }
+    function Submit() {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Join_channel", "Home")',
+            data: { ID: $('#ID').val(), Pass: $('#Password').val() },
+            success: function (data) {
+                switch (data.data) {
+                    case 1:
+                        var form = $('<form action="http://localhost:25357/chat" method="post"> <input type="text" name="channel" value="' + $('#ID').val() + '" /></form>');
+                        $('body').append(form);
+                        form.submit();
+                        return;
+                    case 2:
+                        document.getElementById("ErrorJoin").innerHTML = "Mật khẩu không chính xác";
+                        Password.focus();
+                        return;
+                    default:
+                        return;
+                }
+            }
+        })
+    }
+    function AddChannel() {
+        if ($('#name').val() == "") {
+            name.focus();
+            return;
+        }
+        if ($('#pwd').val() == "") {
+            pwd.focus();
+            return;
+        }
+        if ($('#re_pwd').val() == "") {
+            re_pwd.focus();
+            return;
+        }
+        if ($('#pwd').val() != $('#re_pwd').val()) {
+            document.getElementById("ErrorAdd").innerHTML = "Mật khẩu nhập lại không chính xác!";
+            pwd.focus();
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Add_channel", "Home")',
+            data: { Name: $('#name').val(), Pass: $('#pwd').val() },
+            success: function (data) {
+                switch (data.data) {
+                    case 1:
+                        window.location.href = '@Url.Action("Index","Home")';
+                        return;
+                    case 2:
+                        document.getElementById("ErrorAdd").innerHTML = "Có lỗi xảy ra. Vui lòng thử lại sau!";
+                        Password.focus();
+                        return;
+                    default:
+                        return;
+                }
+            }
+        })
+    }
+</script>
