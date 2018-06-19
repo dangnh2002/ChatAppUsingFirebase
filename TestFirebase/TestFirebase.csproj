@@ -108,6 +108,7 @@
     <Content Include="firebase.json" />
     <Content Include="Images\profile_placeholder.png" />
     <Content Include="manifest.json" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
