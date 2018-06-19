@@ -17,6 +17,10 @@
                 </button>
                 <a href="~/Chat/LogOut" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-color-text--white">Thoát</a>
             </div>
+            <div id="copy-link">
+                <input type="text" id="UrlChannel" value='http://localhost:25357/chat/JoinMe?channelID=@ViewBag.ID_channel&ChannelPassword=@Session["PasswordChannel"]' class="form-control d-inline-block" width="200px">
+                <button type="button" class="btn btn-info d-inline-block" onclick="Copy()">Copy</button>
+            </div>
         </div>
         <div id="messages-card-container" class="mdl-cell mdl-cell--12-col mdl-grid">
             <!-- Messages container -->
@@ -60,6 +64,12 @@
         messagingSenderId: "101148315407"
     };
     firebase.initializeApp(config);
+    function Copy() {
+        var copyText = document.getElementById("UrlChannel");
+        copyText.select();
+        document.execCommand("copy");
+        //alert(copyText.value);
+    }
 </script>
 <script src="/__/firebase/4.1.3/firebase.js"></script>
 <script src="/__/firebase/init.js"></script>

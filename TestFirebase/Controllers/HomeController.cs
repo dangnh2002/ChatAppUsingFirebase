@@ -23,6 +23,8 @@ namespace TestFirebase.Controllers
         {
             //lấy list data
             var lstChannel = GetListChannel();
+            //Lưu lại password đã mã hóa 1 lần
+            Session["PasswordChannel"] = mahoa(Pass);
             //mã hóa Pass 2 lần 
             var Passmahoa = Encrypt(mahoa(Pass));
             //kiểm tra pass có đúng không 
